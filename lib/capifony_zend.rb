@@ -129,15 +129,20 @@ module Capifony
             env = application_env
           end
           
-          data = capture("#{try_sudo} cat #{current_path}/#{app_db_config_file}")
           environment = "#{env} : application"
           
-          if '.ini' === File.extname("#{current_path}/#{app_db_config_file}") then
+          #if '.ini' === File.extname("#{current_path}/#{app_db_config_file}") then
             if File.readable?("#{current_path}/#{app_db_config_file}") then
               puts "\t reading file #{current_path}/#{app_db_config_file}".green
               ini = IniFile::load("#{current_path}/#{app_db_config_file}")
+              
+            elsif File.readable?("#{latest_release}/#{app_db_config_file}") then
+              puts "\t reading file #{latest_release}/#{app_db_config_file}".green
+              ini = IniFile::load("#{latest_release}/#{app_db_config_file}")
+            
             else
               puts "\t processing output from file #{current_path}/#{app_db_config_file}".green
+              data = capture("#{try_sudo} cat #{current_path}/#{app_db_config_file}")
               ini = IniFile.new(:content => data, :comment => ';')
             end
             
@@ -159,7 +164,7 @@ module Capifony
             
             return config
           end
-        end
+        #end
 
         def remote_file_exists?(full_path)
           'true' == capture("if [ -e #{full_path} ]; then echo 'true'; fi").strip
