@@ -141,8 +141,8 @@ module Capifony
               ini = IniFile::load("#{latest_release}/#{app_db_config_file}")
             
             else
-              puts "\t processing output from file #{current_path}/#{app_db_config_file}".green
-              data = capture("#{try_sudo} cat #{current_path}/#{app_db_config_file}")
+              puts "\t processing output from file #{latest_release}/#{app_db_config_file}".green
+              data = capture("#{try_sudo} cat #{latest_release}/#{app_db_config_file}")
               ini = IniFile.new(:content => data, :comment => ';')
             end
             
