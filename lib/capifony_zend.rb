@@ -51,7 +51,9 @@ module Capifony
           app_path + '/application/configs/application.dist.ini' => app_path + '/application/configs/application.ini'
         }
 
-        set :app_db_config_file,    "application.ini"
+        # Method to load database config settings, use "ini" to load from Zend config ini file or "env" for environment variables
+        set :app_db_config_load_method, "ini"
+        set :app_db_config_file,        "application.ini"
 
         # Whether to use composer to install vendors.
         # If set to false, it will use the bin/vendors script
@@ -123,12 +125,25 @@ module Capifony
         set :local_mysql_socket,    "/usr/local/zend/mysql/tmp/mysql.sock"
         set :remote_mysql_bin,      "mysql"
         set :remote_mysqldump_bin,  "mysqldump"
-
+        
         def load_database_config(env = nil)
+          
           if (!env)
             env = application_env
           end
           
+          if app_db_config_load_method == "ini"
+            config = load_database_config_from_ini(env)
+          elsif app_db_config_load_method == "env"
+            config = load_database_config_from_env
+          else
+            raise "Invalid parameter app_db_config_load_method='#{app_db_config_load_method}', 'ini' or 'env' expected"
+          end
+ 
+          return config
+        end
+        
+        def load_database_config_from_ini(env = nil)
           environment = "#{env} : application"
           
           #if '.ini' === File.extname("#{current_path}/#{app_db_config_file}") then
@@ -163,8 +178,11 @@ module Capifony
             end
             
             return config
-          end
-        #end
+        end
+        
+        def load_database_config_from_env
+          return app_db_config
+        end
 
         def remote_file_exists?(full_path)
           'true' == capture("if [ -e #{full_path} ]; then echo 'true'; fi").strip
