@@ -5,7 +5,7 @@ namespace :zend do
       task :migrate, :roles => :app, :only => { :primary => true }, :except => { :no_release => true } do
         
         on_rollback {
-          if backup_db_before_migrations == 'true'
+          if backup_db_before_migrations
             database.remote.restore
           end
         }
