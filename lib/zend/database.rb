@@ -7,7 +7,7 @@ namespace :database do
     desc "Migrates a remote database"
     task :migrate, :roles => :db, :only => { :primary => true } do
       
-      if backup_db_before_migrations
+      if backup_db_before_migrations == 'yes'
         database.remote.dump
       end
       
