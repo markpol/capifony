@@ -110,7 +110,7 @@ module Capifony
         set :model_manager,         "doctrine"
         
         # Flag whether to backup the database before running migrations
-        set :backup_db_before_migrations, "yes"
+        #set :backup_db_before_migrations, "yes"
 
         # Doctrine custom entity manager
         set :doctrine_em,           false
