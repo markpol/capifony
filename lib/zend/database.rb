@@ -6,7 +6,10 @@ namespace :database do
   namespace :remote do
     desc "Migrates a remote database"
     task :migrate, :roles => :db, :only => { :primary => true } do
-      database.remote.dump
+      
+      if backup_db_before_migrations == 'true'
+        database.remote.dump
+      end
       
       transaction do
         if model_manager == "doctrine2"

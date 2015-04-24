@@ -5,7 +5,9 @@ namespace :zend do
       task :migrate, :roles => :app, :only => { :primary => true }, :except => { :no_release => true } do
         
         on_rollback {
-          database.remote.restore
+          if backup_db_before_migrations == 'true'
+            database.remote.restore
+          end
         }
 
         if !interactive_mode || Capistrano::CLI.ui.agree("Do you really want to migrate #{application_env}'s database? (y/N)")
